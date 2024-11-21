@@ -1,0 +1,30 @@
+{
+  "name": "kaai",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch ./src/index.ts",
+    "db:start": "./scripts/start-dbcontainer.sh",
+    "db:stop": "./scripts/stop-dbcontainer.sh",
+    "db:enter": "./scripts/enter-db.sh",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "npm run db:generate && drizzle-kit migrate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.35.3",
+    "express": "^4.21.1",
+    "mysql2": "^3.11.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "drizzle-kit": "^0.26.2",
+    "tsx": "^4.19.1"
+  }
+}
