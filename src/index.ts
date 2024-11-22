@@ -12,14 +12,12 @@ const port = 3000;
 
 // middlewares
 app.use(express.json()); // processes json data
+// response middleware
 app.use(successResponseMiddleware);
 app.use(errorResponseMiddleware);
 
+// routes
 app.use("/recipe", recipeRouter);
-
-app.get("/", (req, res: Response) => {
-  res.send("Hello World!");
-});
 
 app.listen(port, () => {
   console.log(`KAAI listening on port ${port}`);
