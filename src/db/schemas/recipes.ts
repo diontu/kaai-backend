@@ -31,5 +31,5 @@ export const recipeIngredientsTable = mysqlTable("recipe_ingredients", {
     .notNull()
     .references(() => ingredientsTable.id),
   quantity: varchar({ length: 50 }).notNull(),
-  unit: varchar({ length: 50 }).notNull(),
+  unit: varchar({ length: 50 }),
 });

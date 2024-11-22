@@ -3,5 +3,3 @@
 3. `npm run db:start`
 4. `npm run db:migrate`
 5. `npm run dev`
-
-do not MIGRATE YET! SCHEMAS NOT DONE!
