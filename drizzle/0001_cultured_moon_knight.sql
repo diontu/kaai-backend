@@ -1,0 +1,1 @@
+ALTER TABLE `recipe_ingredients` MODIFY COLUMN `unit` varchar(50) NOT NULL;
