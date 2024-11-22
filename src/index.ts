@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { drizzle } from "drizzle-orm/mysql2";
 import express from "express";
-import todoRouter from "./routers/todo.js";
+import recipeRouter from "./routers/recipe";
 import db from "./db/db";
 
 const db = drizzle(process.env.DATABASE_URL!);
@@ -11,10 +11,10 @@ const port = 3000;
 // middlewares
 app.use(express.json()); // processes json data
 
-app.use("/api/todo", todoRouter);
+app.use("/recipe", recipeRouter);
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`KAAI listening on port ${port}`);
 });
 
 // async function main() {
