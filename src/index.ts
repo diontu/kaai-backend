@@ -3,8 +3,8 @@ import { drizzle } from "drizzle-orm/mysql2";
 import express from "express";
 import recipeRouter from "./routers/recipe/recipe";
 import db from "./db/db";
-import { successResponseMiddleware } from "./response/success";
-import { errorResponseMiddleware } from "./response/error";
+import { successResponseMiddleware } from "./middlewares/response/success";
+import { errorResponseMiddleware } from "./middlewares/response/error";
 
 const db = drizzle(process.env.DATABASE_URL!);
 const app = express();

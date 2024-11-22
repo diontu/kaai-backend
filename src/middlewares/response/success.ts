@@ -1,5 +1,5 @@
 import type { Response } from "express";
-import type { ValueOf } from "./../type-utils/typeUtils";
+import type { ValueOf } from "../../type-utils/typeUtils";
 import { StatusCodes } from "http-status-codes";
 
 export type SuccessResponseFunction = (
