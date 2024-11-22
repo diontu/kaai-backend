@@ -1,7 +1,11 @@
 import type { Response } from "express";
+import type { ValueOf } from "./../type-utils/typeUtils";
 import { StatusCodes } from "http-status-codes";
 
-type ErrorResponseFunction = (error: any, statusCode?: number) => Response;
+export type ErrorResponseFunction = (
+  error: any,
+  statusCode?: number
+) => Response;
 
 const errorResponseFunction = function (
   error: any,
@@ -13,9 +17,7 @@ const errorResponseFunction = function (
   });
 };
 
-const errorResponseMiddleware = (req, res, next) => {
+export const errorResponseMiddleware = (req, res, next) => {
   res.error = errorResponseFunction;
   next();
 };
-
-export { errorResponseMiddleware, ErrorResponseFunction };

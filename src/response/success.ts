@@ -1,7 +1,11 @@
 import type { Response } from "express";
+import type { ValueOf } from "./../type-utils/typeUtils";
 import { StatusCodes } from "http-status-codes";
 
-type SuccessResponseFunction = (data: any, statusCode?: number) => Response;
+export type SuccessResponseFunction = (
+  data: any,
+  statusCode?: number
+) => Response;
 
 const successResponseFunction = function (
   data: any,
@@ -13,9 +17,7 @@ const successResponseFunction = function (
   });
 };
 
-const successResponseMiddleware = (req, res, next) => {
+export const successResponseMiddleware = (req, res, next) => {
   res.success = successResponseFunction;
   next();
 };
-
-export { successResponseMiddleware, SuccessResponseFunction };

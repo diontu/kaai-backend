@@ -14,21 +14,25 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", async (req, res: Response) => {
+  // TODO: could improve the validation here with a better error message
   const recipeGetIdSchemaObject = {
-    id: req.params.id,
+    id: isNaN(parseInt(req.params.id))
+      ? req.params.id
+      : parseInt(req.params.id),
   };
   const result = recipeGetIdSchema.safeParse(recipeGetIdSchemaObject);
 
-  if (!result.success || true) {
-    res.error("error");
+  if (!result.success) {
+    res.error(result.error);
     return;
   }
 
-  // TODO: get a recipe
   const queryResults = await db
     .select()
     .from(recipesTable)
     .where(eq(recipesTable.id, result.data.id));
+
+  res.success(queryResults);
 });
 
 router.post("/", (req, res) => {
