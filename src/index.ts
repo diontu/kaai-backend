@@ -1,11 +1,16 @@
 import "dotenv/config";
 import express from "express";
+
+// routes
 import recipeRouter from "./routers/recipe/recipe";
-import db from "./db/db";
+
+// middlewares
 import { successResponseMiddleware } from "./middlewares/response/success";
 import { errorResponseMiddleware } from "./middlewares/response/error";
-import { usersTable } from "./db/schemas/users";
 
+// db
+import db from "./db/db";
+import { usersTable } from "./db/schemas/users";
 import { eq } from "drizzle-orm";
 
 const app = express();
@@ -44,25 +49,3 @@ try {
 app.listen(port, () => {
   console.log(`KAAI listening on port ${port}`);
 });
-
-// async function main() {
-//   const user: typeof usersTable.$inferInsert = {
-//     name: "John",
-//     age: 30,
-//     email: "john@example.com",
-//   };
-//   await db.insert(usersTable).values(user);
-//   console.log("New user created!");
-//   const users = await db.select().from(usersTable);
-//   console.log("Getting all users from the database: ", users);
-//   await db
-//     .update(usersTable)
-//     .set({
-//       age: 31,
-//     })
-//     .where(eq(usersTable.email, user.email));
-//   console.log("User info updated!");
-//   await db.delete(usersTable).where(eq(usersTable.email, user.email));
-//   console.log("User deleted!");
-// }
-// main();
