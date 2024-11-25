@@ -11,7 +11,8 @@
     // Use correct ESM import behavior
     "esModuleInterop": true,
     // Disallow features that require cross-file awareness
-    "isolatedModules": true
+    "isolatedModules": true,
+    "strict": true
   },
   "include": ["src/**/*.ts"], // Ensure your files are included
   "exclude": ["node_modules"]

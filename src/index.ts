@@ -1,12 +1,13 @@
 import "dotenv/config";
-import { drizzle } from "drizzle-orm/mysql2";
 import express from "express";
 import recipeRouter from "./routers/recipe/recipe";
 import db from "./db/db";
 import { successResponseMiddleware } from "./middlewares/response/success";
 import { errorResponseMiddleware } from "./middlewares/response/error";
+import { usersTable } from "./db/schemas/users";
 
-const db = drizzle(process.env.DATABASE_URL!);
+import { eq } from "drizzle-orm";
+
 const app = express();
 const port = 3000;
 
@@ -18,6 +19,25 @@ app.use(errorResponseMiddleware);
 
 // routes
 app.use("/recipe", recipeRouter);
+
+// TEST
+const testFunction = async () => {
+  const user = {
+    name: "John",
+    age: 30,
+    email: "john@example.com",
+  };
+  if (
+    await db.select().from(usersTable).where(eq(usersTable.email, user.email))
+  )
+    return;
+  await db.insert(usersTable).values(user);
+};
+try {
+  testFunction();
+} catch (error) {
+  console.log("dont worry, this is just a test");
+}
 
 app.listen(port, () => {
   console.log(`KAAI listening on port ${port}`);

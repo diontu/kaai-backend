@@ -1,46 +1,49 @@
-import express, { Response } from "express";
-import { recipeGetIdSchema } from "./schema";
+import express from "express";
+import { recipeGetIdSchema, recipePostSchema } from "./schema";
 import db from "../../db/db";
 import { recipesTable } from "../../db/schemas/recipes";
 import { eq } from "drizzle-orm";
+import { z } from "zod";
+import { Validation } from "../../middlewares/request/validation";
+
+// types
+import type { Request, Response } from "express";
+import type { RecipeGetIdSchemaType, RecipePostSchemaType } from "./schema";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  const decodedSortObject = decodeURIComponent(req.query.sort as string);
-
-  // TODO: get all recipes
-  res.send("get hello world!");
-});
-
-router.get("/:id", async (req, res: Response) => {
-  // TODO: could improve the validation here with a better error message
-  const recipeGetIdSchemaObject = {
-    id: isNaN(parseInt(req.params.id))
-      ? req.params.id
-      : parseInt(req.params.id),
-  };
-  const result = recipeGetIdSchema.safeParse(recipeGetIdSchemaObject);
-
-  if (!result.success) {
-    res.error(result.error);
-    return;
-  }
-
-  const queryResults = await db
-    .select()
-    .from(recipesTable)
-    .where(eq(recipesTable.id, result.data.id));
+router.get("/", async (_req, res) => {
+  const queryResults = await db.select().from(recipesTable);
 
   res.success(queryResults);
 });
 
-router.post("/", (req, res) => {
-  // TODO: create a recipe
-  const jsonData = req.body;
+router.get(
+  "/:id",
+  Validation.check("params", recipeGetIdSchema),
+  async (req: Request<RecipeGetIdSchemaType>, res: Response) => {
+    const queryResults = await db
+      .select()
+      .from(recipesTable)
+      .where(eq(recipesTable.id, Number(req.params.id)));
 
-  res.send(`post hello world! ${JSON.stringify(jsonData)}`);
-});
+    res.success(queryResults);
+  }
+);
+
+router.post(
+  "/",
+  Validation.check("body", recipePostSchema),
+  async (req: Request<{}, {}, RecipePostSchemaType>, res: Response) => {
+    const jsonData = req.body;
+    await db.insert(recipesTable).values({
+      ...jsonData,
+      created_by: 1, // TODO: SET THIS TO THE CURRENT USER (ID OBTAINED THRU AUTH)
+    });
+
+    res.success(jsonData);
+  }
+);
 
 router.put("/:id", (req, res) => {
   // TODO: edit a recipe
