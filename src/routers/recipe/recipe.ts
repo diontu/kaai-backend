@@ -1,14 +1,31 @@
 import express from "express";
-import { recipeGetIdSchema, recipePostSchema } from "./schema";
+
+// middlewares
+import { Validation } from "../../middlewares/request/validation";
+
+// db
 import db from "../../db/db";
 import { recipesTable } from "../../db/schemas/recipes";
-import { eq } from "drizzle-orm";
-import { z } from "zod";
-import { Validation } from "../../middlewares/request/validation";
+import { eq, and } from "drizzle-orm";
+
+// schemas
+import {
+  recipeGetIdParamsSchema,
+  recipePostBodySchema,
+  recipePutParamsSchema,
+  recipePutBodySchema,
+  recipeDeleteParamsSchema,
+} from "./schema";
 
 // types
 import type { Request, Response } from "express";
-import type { RecipeGetIdSchemaType, RecipePostSchemaType } from "./schema";
+import type {
+  RecipeGetIdParamsSchemaType,
+  RecipePostBodySchemaType,
+  RecipePutParamsSchemaType,
+  RecipePutBodySchemaType,
+  RecipeDeleteParamsSchemaType,
+} from "./schema";
 
 const router = express.Router();
 
@@ -20,12 +37,18 @@ router.get("/", async (_req, res) => {
 
 router.get(
   "/:id",
-  Validation.check("params", recipeGetIdSchema),
-  async (req: Request<RecipeGetIdSchemaType>, res: Response) => {
+  Validation.check("params", recipeGetIdParamsSchema),
+  async (req: Request<RecipeGetIdParamsSchemaType>, res: Response) => {
+    const recipeId = Number(req.params.id);
     const queryResults = await db
       .select()
       .from(recipesTable)
-      .where(eq(recipesTable.id, Number(req.params.id)));
+      .where(
+        and(
+          eq(recipesTable.id, recipeId),
+          eq(recipesTable.created_by, 1) // TODO: SET THIS TO THE CURRENT USER (ID OBTAINED THRU AUTH)
+        )
+      );
 
     res.success(queryResults);
   }
@@ -33,8 +56,8 @@ router.get(
 
 router.post(
   "/",
-  Validation.check("body", recipePostSchema),
-  async (req: Request<{}, {}, RecipePostSchemaType>, res: Response) => {
+  Validation.check("body", recipePostBodySchema),
+  async (req: Request<{}, {}, RecipePostBodySchemaType>, res: Response) => {
     const jsonData = req.body;
     await db.insert(recipesTable).values({
       ...jsonData,
@@ -45,14 +68,56 @@ router.post(
   }
 );
 
-router.put("/:id", (req, res) => {
-  // TODO: edit a recipe
-  res.send("put hello world!");
-});
+router.put(
+  "/:id",
+  Validation.check("params", recipePutParamsSchema),
+  Validation.check("body", recipePutBodySchema),
+  async (
+    req: Request<RecipePutParamsSchemaType, {}, RecipePutBodySchemaType>,
+    res: Response
+  ) => {
+    const recipeId = Number(req.params.id);
+    const jsonData = req.body;
+    // make sure the recipe is created by the current user
+    const checkRecipeQuery = await db
+      .select()
+      .from(recipesTable)
+      .where(eq(recipesTable.id, recipeId));
 
-router.delete("/:id", (req, res) => {
-  // TODO: delete a recipe
-  res.send("delete hello world!");
-});
+    if (checkRecipeQuery.length === 0) {
+      res.error("Recipe not found", 404);
+      return;
+    }
+
+    if (checkRecipeQuery[0].created_by !== 1) {
+      // TODO: SET THIS TO THE CURRENT USER (ID OBTAINED THRU AUTH)
+      res.error("You are not authorized to update this recipe", 403);
+      return;
+    }
+
+    await db
+      .update(recipesTable)
+      .set({
+        ...jsonData,
+      })
+      .where(eq(recipesTable.id, recipeId));
+
+    res.success(jsonData);
+  }
+);
+
+router.delete(
+  "/:id",
+  Validation.check("params", recipeDeleteParamsSchema),
+  async (req: Request<RecipeDeleteParamsSchemaType>, res: Response) => {
+    await db
+      .delete(recipesTable)
+      .where(eq(recipesTable.id, Number(req.params.id)));
+
+    res.success({
+      id: req.params.id,
+    });
+  }
+);
 
 export default router;

@@ -22,16 +22,18 @@ app.use("/recipe", recipeRouter);
 
 // TEST
 const testFunction = async () => {
-  const user = {
-    name: "John",
+  const user1 = {
+    name: "John2",
     age: 30,
-    email: "john@example.com",
+    email: "john2@example.com",
   };
-  if (
-    await db.select().from(usersTable).where(eq(usersTable.email, user.email))
-  )
-    return;
-  await db.insert(usersTable).values(user);
+  const result = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.email, user1.email));
+
+  if (result.length !== 0) return;
+  await db.insert(usersTable).values(user1);
 };
 try {
   testFunction();
