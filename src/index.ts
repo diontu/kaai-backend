@@ -1,6 +1,9 @@
 import "dotenv/config";
 import express from "express";
 
+// websocket
+import { enableAIChat } from "./websocket/websocket";
+
 // routes
 import recipeRouter from "./routers/recipe/recipe";
 
@@ -46,6 +49,8 @@ try {
   console.log("dont worry, this is just a test");
 }
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`KAAI listening on port ${port}`);
 });
+
+enableAIChat(server);
