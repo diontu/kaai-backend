@@ -33,10 +33,13 @@ export const enableAIChat = (server: ReturnType<Express["listen"]>) => {
         for await (const chunk of stream) {
           const content = chunk.choices[0]?.delta?.content || "";
           finalResponse += content;
-          //   process.stdout.write(content);
+
+          process.stdout.write(content);
           // Respond to the client
           ws.send(content);
         }
+        // TODO: insert the final response into the database
+        ws.send("---done---");
       } catch (error) {
         console.error("Error handling message:", error);
         ws.send("Error processing your request.");

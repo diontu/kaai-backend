@@ -12,8 +12,13 @@ import { v4 as uuidv4 } from "uuid";
 import { usersTable } from "./users";
 
 export const conversationsTable = mysqlTable("conversations", {
-  id: char({ length: 36 }).default(uuidv4()).primaryKey(),
-  title: varchar({ length: 255 }).notNull(),
+  id: char({ length: 36 })
+    .$defaultFn(() => uuidv4())
+    .primaryKey(),
+  title: varchar({ length: 255 }),
+  created_by: int()
+    .notNull()
+    .references(() => usersTable.id),
   created_at: timestamp().defaultNow(),
 });
 

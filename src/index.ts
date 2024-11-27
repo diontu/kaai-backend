@@ -1,11 +1,13 @@
 import "dotenv/config";
 import express from "express";
+import cors from "cors";
 
 // websocket
-import { enableAIChat } from "./websocket/websocket";
+import { enableAIChat } from "./websocket/aichat";
 
 // routes
 import recipeRouter from "./routers/recipe/recipe";
+import conversationRouter from "./routers/conversation/conversation";
 
 // middlewares
 import { successResponseMiddleware } from "./middlewares/response/success";
@@ -21,12 +23,14 @@ const port = 3000;
 
 // middlewares
 app.use(express.json()); // processes json data
-// response middleware
+app.use(cors());
+// response middlewares
 app.use(successResponseMiddleware);
 app.use(errorResponseMiddleware);
 
 // routes
 app.use("/recipe", recipeRouter);
+app.use("/conversation", conversationRouter);
 
 // TEST
 const testFunction = async () => {
