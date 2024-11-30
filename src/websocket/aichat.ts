@@ -1,7 +1,16 @@
 import { OpenAI } from "openai";
 import { WebSocketServer } from "ws";
-
 import { Express } from "express";
+
+// db and tables
+import db from "../db/db";
+import { messagesTable } from "../db/schemas/conversations";
+
+// types
+type MessageObjectType = {
+  message: string;
+  chatId: string;
+};
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -19,8 +28,17 @@ export const enableAIChat = (server: ReturnType<Express["listen"]>) => {
     // Handle messages from clients
     ws.on("message", async (message) => {
       try {
-        const userMessage = message.toString();
+        const messageObject: MessageObjectType = JSON.parse(message.toString());
+        const userMessage = messageObject.message;
+        const chatId = messageObject.chatId;
         console.log(`Received: ${userMessage}`);
+
+        // insert user's message
+        await db.insert(messagesTable).values({
+          user_id: 1, // TODO: SET THIS TO THE CURRENT USER (ID OBTAINED THRU AUTH)
+          content: userMessage,
+          conversation_id: chatId,
+        });
 
         // TODO: figure out how to add images
         const stream = await openai.chat.completions.create({
@@ -38,7 +56,11 @@ export const enableAIChat = (server: ReturnType<Express["listen"]>) => {
           // Respond to the client
           ws.send(content);
         }
-        // TODO: insert the final response into the database
+        // insert generated message
+        await db.insert(messagesTable).values({
+          content: finalResponse,
+          conversation_id: chatId,
+        });
         ws.send("---done---");
       } catch (error) {
         console.error("Error handling message:", error);

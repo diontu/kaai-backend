@@ -1,0 +1,1 @@
+ALTER TABLE `messages` MODIFY COLUMN `id` char(36) NOT NULL;

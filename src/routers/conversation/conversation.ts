@@ -5,15 +5,18 @@ import { Validation } from "../../middlewares/request/validation";
 
 // db and tables
 import db from "../../db/db";
-import { eq, and } from "drizzle-orm";
-import { conversationsTable } from "../../db/schemas/conversations";
+import { eq, desc } from "drizzle-orm";
+import {
+  conversationsTable,
+  messagesTable,
+} from "../../db/schemas/conversations";
 
 // schemas
-import {} from "./conversation-req-schema";
+import { conversationGetIdParamsSchema } from "./conversation-req-schema";
 
 // types
 import type { Request, Response } from "express";
-import type {} from "./conversation-req-schema";
+import type { ConversationGetIdParamsSchemaType } from "./conversation-req-schema";
 
 const router = express.Router();
 
@@ -27,6 +30,35 @@ router.get("/", async (req: Request, res: Response) => {
   res.success(queryResults);
 });
 
-// TODO: creates a new conversation id
+router.get(
+  "/:id",
+  Validation.check("params", conversationGetIdParamsSchema),
+  async (req: Request<ConversationGetIdParamsSchemaType>, res: Response) => {
+    const conversationId = req.params.id;
+
+    // get all messages for the specified conversation
+    const results = db
+      .select()
+      .from(messagesTable)
+      .where(eq(messagesTable.conversation_id, conversationId))
+      .orderBy(desc(messagesTable.created_at));
+
+    res.success(results);
+  }
+);
+
+// create a conversation id
+router.post("/", async (_req: Request, res: Response) => {
+  await db.insert(conversationsTable).values({
+    created_by: 1, // TODO: SET THIS TO THE CURRENT USER (ID OBTAINED THRU AUTH)
+  });
+  const selectResults = await db
+    .select()
+    .from(conversationsTable)
+    .orderBy(desc(conversationsTable.created_at))
+    .limit(1);
+
+  res.success(selectResults[0]);
+});
 
 export default router;

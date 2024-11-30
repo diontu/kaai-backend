@@ -22,6 +22,20 @@
       "when": 1732592536887,
       "tag": "0002_worried_carmella_unuscione",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1732926677482,
+      "tag": "0003_old_viper",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1732930708699,
+      "tag": "0004_secret_microchip",
+      "breakpoints": true
     }
   ]
 }

@@ -23,7 +23,9 @@ export const conversationsTable = mysqlTable("conversations", {
 });
 
 export const messagesTable = mysqlTable("messages", {
-  id: char({ length: 36 }).default(uuidv4()).primaryKey(),
+  id: char({ length: 36 })
+    .$defaultFn(() => uuidv4())
+    .primaryKey(),
   content: text().notNull(),
   user_id: int().references(() => usersTable.id),
   conversation_id: char({ length: 36 })
