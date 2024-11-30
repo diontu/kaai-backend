@@ -1,6 +1,7 @@
 import { OpenAI } from "openai";
 import { WebSocketServer } from "ws";
 import { Express } from "express";
+import moment from "moment";
 
 // db and tables
 import db from "../db/db";
@@ -60,6 +61,7 @@ export const enableAIChat = (server: ReturnType<Express["listen"]>) => {
         await db.insert(messagesTable).values({
           content: finalResponse,
           conversation_id: chatId,
+          created_at: moment().add(1, "millisecond").toDate(),
         });
         ws.send("---done---");
       } catch (error) {

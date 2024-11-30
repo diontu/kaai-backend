@@ -5,7 +5,7 @@ import { Validation } from "../../middlewares/request/validation";
 
 // db and tables
 import db from "../../db/db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, asc } from "drizzle-orm";
 import {
   conversationsTable,
   messagesTable,
@@ -34,14 +34,15 @@ router.get(
   "/:id",
   Validation.check("params", conversationGetIdParamsSchema),
   async (req: Request<ConversationGetIdParamsSchemaType>, res: Response) => {
-    const conversationId = req.params.id;
+    const conversationIdEncoded = req.params.id;
+    const conversationId = atob(conversationIdEncoded);
 
     // get all messages for the specified conversation
-    const results = db
+    const results = await db
       .select()
       .from(messagesTable)
       .where(eq(messagesTable.conversation_id, conversationId))
-      .orderBy(desc(messagesTable.created_at));
+      .orderBy(asc(messagesTable.created_at));
 
     res.success(results);
   }
