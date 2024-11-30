@@ -5,7 +5,11 @@ import moment from "moment";
 
 // db and tables
 import db from "../db/db";
-import { messagesTable } from "../db/schemas/conversations";
+import { eq } from "drizzle-orm";
+import { conversationsTable, messagesTable } from "../db/schemas/conversations";
+
+// prompts
+import { getTitlePrompt } from "./chatprompts";
 
 // types
 type MessageObjectType = {
@@ -63,6 +67,29 @@ export const enableAIChat = (server: ReturnType<Express["listen"]>) => {
           conversation_id: chatId,
           created_at: moment().add(1, "millisecond").toDate(),
         });
+
+        // generate a title if there is no title
+        const conversation = await db
+          .select()
+          .from(conversationsTable)
+          .where(eq(conversationsTable.id, chatId))
+          .limit(1);
+        if (!conversation[0].title) {
+          const generatedTitle = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+              { role: "user", content: getTitlePrompt(finalResponse) },
+            ],
+            stream: false,
+          });
+          await db
+            .update(conversationsTable)
+            .set({
+              title: generatedTitle.choices[0].message.content,
+            })
+            .where(eq(conversationsTable.id, chatId));
+        }
+
         ws.send("---done---");
       } catch (error) {
         console.error("Error handling message:", error);

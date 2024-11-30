@@ -25,7 +25,8 @@ router.get("/", async (req: Request, res: Response) => {
   const queryResults = await db
     .select()
     .from(conversationsTable)
-    .where(eq(conversationsTable.created_by, 1)); // TODO: SET THIS TO THE CURRENT USER (ID OBTAINED THRU AUTH)
+    .where(eq(conversationsTable.created_by, 1))
+    .orderBy(desc(conversationsTable.created_at)); // TODO: SET THIS TO THE CURRENT USER (ID OBTAINED THRU AUTH)
 
   res.success(queryResults);
 });
