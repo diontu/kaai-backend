@@ -36,6 +36,13 @@
       "when": 1732930708699,
       "tag": "0004_secret_microchip",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1732936708853,
+      "tag": "0005_marvelous_king_bedlam",
+      "breakpoints": true
     }
   ]
 }

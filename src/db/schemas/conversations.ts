@@ -18,7 +18,7 @@ export const conversationsTable = mysqlTable("conversations", {
   title: varchar({ length: 255 }),
   created_by: int()
     .notNull()
-    .references(() => usersTable.id),
+    .references(() => usersTable.id, { onDelete: "cascade" }),
   created_at: timestamp().defaultNow(),
 });
 
@@ -30,6 +30,6 @@ export const messagesTable = mysqlTable("messages", {
   user_id: int().references(() => usersTable.id),
   conversation_id: char({ length: 36 })
     .notNull()
-    .references(() => conversationsTable.id),
+    .references(() => conversationsTable.id, { onDelete: "cascade" }),
   created_at: timestamp().defaultNow(),
 });
