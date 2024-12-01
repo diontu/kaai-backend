@@ -4,7 +4,7 @@
 source $(dirname $0)/vars.sh
 
 # assumes you have docker installed
-docker container start $MYSQL_CONTAINER_NAME
+docker container start $MYSQL_CONTAINER_NAME -e MYSQL_ROOT_PASSWORD=$MYSQL_PASSWORD -d -p 3306:3306 mysql
 
 RESPONSE=$?
 
