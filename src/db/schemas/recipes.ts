@@ -16,6 +16,8 @@ export const recipesTable = mysqlTable("recipes", {
   description: varchar({ length: 1000 }),
   instructions: text(),
   image: varchar({ length: 255 }),
+  cooking_time_minutes: int().notNull(),
+  difficulty: varchar({ length: 50 }).notNull(),
   created_by: int()
     .notNull()
     .references(() => usersTable.id),

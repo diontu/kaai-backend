@@ -43,6 +43,13 @@
       "when": 1732936708853,
       "tag": "0005_marvelous_king_bedlam",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1733453011553,
+      "tag": "0006_faithful_stranger",
+      "breakpoints": true
     }
   ]
 }
