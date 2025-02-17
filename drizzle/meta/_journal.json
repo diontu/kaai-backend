@@ -50,6 +50,13 @@
       "when": 1733453011553,
       "tag": "0006_faithful_stranger",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1739836147380,
+      "tag": "0007_wandering_wonder_man",
+      "breakpoints": true
     }
   ]
 }
