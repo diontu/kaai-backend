@@ -18,6 +18,8 @@ export const recipePostBodySchema = z.object({
   description: z.string().optional(),
   instructions: z.string().optional(),
   image: z.string().optional(),
+  cooking_time_minutes: pc.number(),
+  difficulty: z.string(),
 });
 export type RecipePostBodySchemaType = z.infer<typeof recipePostBodySchema>;
 

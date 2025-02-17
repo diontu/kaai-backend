@@ -8,6 +8,7 @@ import { enableAIChat } from "./websocket/aichat";
 // routes
 import recipeRouter from "./routers/recipe/recipe";
 import conversationRouter from "./routers/conversation/conversation";
+import webhookRouter from "./webhook/webhook";
 
 // middlewares
 import { successResponseMiddleware } from "./middlewares/response/success";
@@ -31,6 +32,7 @@ app.use(errorResponseMiddleware);
 // routes
 app.use("/recipe", recipeRouter);
 app.use("/conversation", conversationRouter);
+app.use("/api/clerk-webhook", webhookRouter);
 
 // TEST
 const testFunction = async () => {
