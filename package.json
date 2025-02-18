@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsx watch  --tsconfig ./tsconfig.json ./src/index.ts",
     "dev": "tsx watch  --tsconfig ./tsconfig.json ./src/index.ts",
     "db:start": "./scripts/start-dbcontainer.sh",
     "db:stop": "./scripts/stop-dbcontainer.sh",
