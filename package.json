@@ -6,13 +6,13 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsx watch  --tsconfig ./tsconfig.json ./src/index.ts",
-    "dev": "npm run db:migrate && tsx watch  --tsconfig ./tsconfig.json ./src/index.ts",
+    "start": "npm run db:migrate && tsx watch  --tsconfig ./tsconfig.json ./src/index.ts",
+    "dev": "tsx watch  --tsconfig ./tsconfig.json ./src/index.ts",
     "db:start": "./scripts/start-dbcontainer.sh",
     "db:stop": "./scripts/stop-dbcontainer.sh",
     "db:enter": "./scripts/enter-db.sh",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "npm run db:generate && drizzle-kit migrate"
+    "db:migrate": "npm run db:generate && drizzle-kit migrate && drizzle-kit push"
   },
   "keywords": [],
   "author": "",
